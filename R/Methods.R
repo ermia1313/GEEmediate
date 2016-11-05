@@ -1,7 +1,7 @@
 substrRight <- function(x, n=5){
   substr(x, nchar(x)-n+1, nchar(x)) ### Thank you Andrie (http://stackoverflow.com/questions/7963898/extracting-the-last-n-characters-from-a-string-in-r)
 }
-print.GEEMediate <- function(x, digits = max(options()$digits - 4, 3),...)
+print.GEEmediate <- function(x, digits = max(options()$digits - 4, 3),...)
 {
 
   cat("Call:\n")

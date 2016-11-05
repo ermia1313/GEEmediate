@@ -1,4 +1,4 @@
-GEEMediateFit <- function(formula, data, exposure, mediator,
+GEEmediateFit <- function(formula, data, exposure, mediator,
                           surv = F, family = gaussian, corstr  = "independence",...)
 {
 

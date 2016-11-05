@@ -1,4 +1,4 @@
-GEEMediate <- function(formula, exposure, mediator, NIE = T, prop = T, conf.level = 0.95,
+GEEmediate <- function(formula, exposure, mediator, NIE = T, prop = T, conf.level = 0.95,
                        data = parent.frame(), surv = F, family = gaussian, pres = "tog",
                        niealternative = "two-sided", corstr = "independence",...)
 {
@@ -26,7 +26,7 @@ GEEMediate <- function(formula, exposure, mediator, NIE = T, prop = T, conf.leve
   back <- list()
   back$call <- match.call()
   back$alter <- niealternative
-  fit <- invisible(GEEMediateFit(formula = formula, exposure, mediator,
+  fit <- invisible(GEEmediateFit(formula = formula, exposure, mediator,
                        data = data, surv = surv, family = family,
                        corstr = corstr,...))
   back$GEEfit <- fit
@@ -78,6 +78,6 @@ back$nie <- nie
 back$pm <- pm
 back$pres <- pres
 names(back$pm) <- "Prop Med"
-class(back) <- "GEEMediate"
+class(back) <- "GEEmediate"
 back
 }
