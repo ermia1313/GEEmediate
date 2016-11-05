@@ -25,11 +25,11 @@ DupliData <- function(df, mediator = NULL, outcome = NULL, case = NULL , Time = 
       df[[paste0(var.name,".star")]]  <- rep(0,n.row)
       df.star[[paste0(var.name)]] <- rep(0,n.row)
     }
-    df$INT1 <- df.star$INT2 <- c(rep(1,n.row))
-    df$INT2 <- df.star$INT1 <- c(rep(0,n.row))
-    df.dupl <- rbind(df[c(paste0("INT",1:2),names.covar,paste0(names.covar,".star"),
+    df$INT<- df.star$INT.star <- c(rep(1,n.row))
+    df$INT.star <- df.star$INT <- c(rep(0,n.row))
+    df.dupl <- rbind(df[c("INT","INT.star", names.covar, paste0(names.covar,".star"),
                           paste0(c(mediator,outcome)))],
-                     df.star[c(paste0("INT",1:2),names.covar,paste0(names.covar,".star"),
+                     df.star[c("INT","INT.star", names.covar, paste0(names.covar,".star"),
                                paste0(c(mediator,outcome)))])
     if (is.null(ID)) {df.dupl$ID <- rep(1:n.row,2)}
   }
