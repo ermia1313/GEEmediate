@@ -1,14 +1,14 @@
 Package: GEEmediate
-Title: Mediation analysis using the difference method for generalized linear
-    models
+Title: Mediation analysis using the difference method for generalized linear models
 Authors@R: person("Daniel", "Nevo", email = "danielnevo@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph)
-Version: 1.0
-Depends:
-    R (>= 3.3.0)
-Imports:
-    gee
-License: What license is it under?
+Version: 0.0.0
+Date: 2016-11-09
+Depends: R (>= 3.3.0)
+Imports: stats, gee
+License: GPL (>= 3)
 Encoding: UTF-8
+NeedsCompilation: no
 LazyData: true
 RoxygenNote: 5.0.1
+BugReports: https://github.com/daniel258/GEEMediate/issues

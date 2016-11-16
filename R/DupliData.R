@@ -38,7 +38,7 @@ DupliData <- function(df, mediator = NULL, outcome = NULL, case = NULL , Time = 
 print("survival is yet to be included")
     }
 
-    df.return <- data.frame(IDdupl, model,  Xdupl1, Xdupl2, Mdupl, casedupl, Timedupl)
+#    df.return <- data.frame(IDdupl, model,  Xdupl1, Xdupl2, Mdupl, casedupl, Timedupl)
     }
 
   return(df.dupl)

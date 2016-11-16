@@ -1,6 +1,7 @@
 substrRight <- function(x, n=5){
   substr(x, nchar(x)-n+1, nchar(x)) ### Thank you Andrie (http://stackoverflow.com/questions/7963898/extracting-the-last-n-characters-from-a-string-in-r)
 }
+#' @export
 print.GEEmediate <- function(x, digits = max(options()$digits - 4, 3),...)
 {
 
@@ -35,9 +36,9 @@ print.GEEmediate <- function(x, digits = max(options()$digits - 4, 3),...)
     coef.table <- cbind(coeffs, sd.err, zvalue, pvalue)
     dimnames(coef.table) <- list(names(coeffs),
                                  c("EStimate", "Std. Error", "z value", "Pr(>|z|)"))
-    printCoefmat(coef.table[stars,], digits = digits)
+    stats::printCoefmat(coef.table[stars,], digits = digits)
     cat("\nMarginal Model (Model without the Mediator):\n")
-    printCoefmat(coef.table[no.stars,],  digits = digits)
+    stats::printCoefmat(coef.table[no.stars,],  digits = digits)
   }
   cat("\n---------------------------")
   cat("\nNatural Indirect Effect: ", format(x$nie, digits = digits),

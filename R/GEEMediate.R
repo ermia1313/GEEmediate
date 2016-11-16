@@ -1,6 +1,60 @@
-GEEmediate <- function(formula, exposure, mediator, NIE = T, prop = T, conf.level = 0.95,
-                       data = parent.frame(), surv = F, family = gaussian, pres = "tog",
-                       niealternative = "two-sided", corstr = "independence",...)
+#' Causal mediation analysis for generlized linear models using the difference method.
+#'
+#' Estimation of natural direct and indirect effects for generalized linear models. The function utilizes a data-duplication algorithm to fit
+#' marginal and conditional GLMs in a way that allow for consistent variance estimation. The function
+#' produce point estimates, confidence intervals and p-values for the natural indirect effect and the mediation proportion
+#
+#'
+#' @param formula A formula expression as for
+#' other regression models, of the form response ~ predictors. See the documentation of \code{\link[stats]{lm}} and \code{\link[stats]{formula}} for details.
+#' predictors should include exposure/treatment and mediator.
+#' @param exposure The exposure (string).
+#' @param mediator The mediator (string).
+#' @param df A name of a data frame where all variables mentioned in formula are stored.
+#' @param family A \code{family} object to be used in gee: a list of functions and expressions for defining link and variance functions
+#' see the gee documentation. Default is gaussian. See also \code{\link[gee]{gee}} and \code{\link[stats]{glm}}.
+#' @param corstr A working correlation structure. See \code{\link[gee]{gee}} and \code{\link[stats]{glm}}.
+#' @param pres Presentation of the coefficient tables. "tog" for a single table, "sep" for two separated tables.
+#' @param conf.level Confidence level for all confidence intervals (default 0.95)
+#' @param surv Is the outcome survival (not supported)
+#' @param niealternative Alternative hypothesis for testing that the nie=0. Either "two-sided" (default) or
+#' "one-sided" for alternative nie>0.
+#' @param ... Further arguments for the \code{gee} call.
+#' @return The output contains the following components:
+#' \item{call}{The call.}
+#' \item{GEE.fit}{Results of fitting the GEE for the duplicated data.}
+#' \item{nie}{The natural indirect effect estimate.}
+#' \item{nie.pval}{P-value for tesing mediation using the NIE.}
+#' \item{nde}{The natural direct effect estimate.}
+#' \item{nie.ci}{Confidence interval in for the NIE in confidence level conf.level.}
+#' \item{pm}{The mediation proportion estimate.}
+#' \item{pm.pval}{P-value for tesing one-sided mediation using the mediation proportion.}
+#' \item{pm.ci}{Confidence interval for the mediation proportio in confidence level conf.level.}
+#' @examples
+#' \dontrun{
+#' SimNormalData <- function(n,beta.star = 1, p = 0.3, rho =0.4, inter =  0)
+#'{
+#'  beta2 <- (p/rho)*beta1.star
+#'  beta1 <- (1-p)*beta1.star
+#'  XM <- mvrnorm(n, mu = c(0,0), Sigma = matrix(c(1,rho,rho,1),2,2))
+#'  X <- XM[,1]
+#'  M <- XM[,2]
+#'  beta <- c(inter, beta1, beta2)
+#'  print(beta)
+#'  Y <- cbind(rep(1,n),XM)%*%beta+rnorm(n,0,sd = 1)
+#'  return(data.frame(X = X, M = M, Y = Y))
+#'}
+#' set.seed(314)
+#' df <- SimNormalData(500)
+#' GEEmediate(Y ~ X + M, exposure = "X", mediator = "M", df = df)
+#' }
+#'
+#'
+#' @importFrom stats qnorm pnorm as.formula gaussian update printCoefmat
+#' @export
+GEEmediate <- function(formula, exposure, mediator, df, family = gaussian,  corstr = "independence",
+                       conf.level = 0.95, surv = F,  pres = "tog",
+                       niealternative = "two-sided",...)
 {
   alp.conf <- (1 - conf.level)/2
   n.vars <- length(all.vars(formula))
@@ -23,11 +77,15 @@ GEEmediate <- function(formula, exposure, mediator, NIE = T, prop = T, conf.leve
   {
     stop("The mediator should be included in the model formula" )
   }
+  if (is.null(df))
+  {
+    stop("Argument 'df' was null. Data must be part of a data frame" )
+  }
   back <- list()
   back$call <- match.call()
   back$alter <- niealternative
   fit <- invisible(GEEmediateFit(formula = formula, exposure, mediator,
-                       data = data, surv = surv, family = family,
+                       data = df, surv = surv, family = family,
                        corstr = corstr,...))
   back$GEEfit <- fit
   nde <- fit$coefficients[names(fit$coefficients)==exposure]
