@@ -1,7 +1,10 @@
 Package: GEEmediate
-Title: Mediation analysis using the difference method for generalized linear models
+Title: Mediation Analysis for Leneralized Linear Models Using the Difference Method
 Authors@R: person("Daniel", "Nevo", email = "danielnevo@gmail.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph)
+Description: Causal mediation analysis for a single exposure/treatment and a single mediator, 
+  both allowed to be either continuous or binary. The package implements the difference method
+  and provide point and interval estimates as well as testing for the natural direct and 
+  indirect effects and the mediation proportion.
 Version: 0.0.0
 Date: 2016-11-09
 Depends: R (>= 3.3.0)
