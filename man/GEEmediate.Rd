@@ -73,4 +73,7 @@ GEEmediate(Y ~ X + M, exposure = "X", mediator = "M", df = df)
 
 
 }
+\references{
+Nevo, Liao and Spiegelman, \emph{Estimation and infernece for the mediation proportion} (2016+)
+}
 
