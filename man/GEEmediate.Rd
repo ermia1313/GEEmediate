@@ -2,7 +2,7 @@
 % Please edit documentation in R/GEEmediate.R
 \name{GEEmediate}
 \alias{GEEmediate}
-\title{Causal mediation analysis for generlized linear models using the difference method.}
+\title{Mediation Analysis for Generalized Linear Models Using the Difference Method}
 \usage{
 GEEmediate(formula, exposure, mediator, df, family = gaussian,
   corstr = "independence", conf.level = 0.95, surv = F, pres = "tog",
@@ -39,26 +39,26 @@ see the gee documentation. Default is gaussian. See also \code{\link[gee]{gee}} 
 The output contains the following components:
 \item{call}{The call.}
 \item{GEE.fit}{Results of fitting the GEE for the duplicated data.}
-\item{nie}{The natural indirect effect estimate.}
+\item{nie}{The natural indirect effect estimate. NIE and NDE are reported on the coefficient scale}
 \item{nie.pval}{P-value for tesing mediation using the NIE.}
 \item{nde}{The natural direct effect estimate.}
 \item{nie.ci}{Confidence interval in for the NIE in confidence level conf.level.}
 \item{pm}{The mediation proportion estimate.}
 \item{pm.pval}{P-value for tesing one-sided mediation using the mediation proportion.}
-\item{pm.ci}{Confidence interval for the mediation proportio in confidence level conf.level.}
+\item{pm.ci}{Confidence interval for the mediation proportion in confidence level conf.level.}
 }
 \description{
 Estimation of natural direct and indirect effects for generalized linear models. The function utilizes a data-duplication algorithm to fit
 marginal and conditional GLMs in a way that allow for consistent variance estimation. The function
-produce point estimates, confidence intervals and p-values for the natural indirect effect and the mediation proportion
+produces point estimates, confidence intervals and p-values for the natural indirect effect and the mediation proportion
 }
 \examples{
 \dontrun{
-SimNormalData <- function(n,beta.star = 1, p = 0.3, rho =0.4, inter =  0)
+SimNormalData <- function(n,beta1.star = 1, p = 0.3, rho =0.4, inter =  0)
 {
  beta2 <- (p/rho)*beta1.star
  beta1 <- (1-p)*beta1.star
- XM <- mvrnorm(n, mu = c(0,0), Sigma = matrix(c(1,rho,rho,1),2,2))
+ XM <- MASS::mvrnorm(n, mu = c(0,0), Sigma = matrix(c(1,rho,rho,1),2,2))
  X <- XM[,1]
  M <- XM[,2]
  beta <- c(inter, beta1, beta2)
