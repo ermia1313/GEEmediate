@@ -107,12 +107,13 @@ GEEmediate <- function(formula, exposure, mediator, df, family = gaussian,  cors
               M is not a meidator.
               ")
       var.nie <-  v + v.star - 2 * covar
-        warning("Calculating two-sided p-value for the null NIE=0 ")
-        nie.pval <- pnorm(2*abs(nie)/sqrt(var.nie),lower.tail = F)
-        back$alter <- "two-sided"
-
+      warning("Calculating two-sided p-value for the null NIE=0 ")
+      nie.pval <- pnorm(2*abs(nie)/sqrt(var.nie),lower.tail = F)
+      nie.ci <- nie + c(qnorm(alp.conf), qnorm(1 - alp.conf)) * sqrt(var.nie)
+      back$alter <- "two-sided"
       back$nie.pval <- nie.pval
       back$nie.ci <- nie.ci
+
     } else {
       var.pm <- v/te^2 + v.star * (nde^2) / (te^4) -
         2 * covar * nde / (te^3) # Var(PM) by the delta method

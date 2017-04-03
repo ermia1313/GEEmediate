@@ -46,11 +46,18 @@ print.GEEmediate <- function(x, digits = max(options()$digits - 4, 3),...)
       " for ", paste0(x$alter), " test for mediation \n", sep = "")
   cat("Confidence Interval = [", format(x$nie.ci[1],digits = digits),",",format(x$nie.ci[2],digits = digits),"]", sep = "")
   cat("\n---------------------------")
-  cat("\nNatural Direct Effect:", format(x$nie, digits = digits))
+  cat("\nNatural Direct Effect:", format(x$nde, digits = digits))
   cat("\n---------------------------")
+  if(x$pm >=0 & x$pm < 1)
+  {
   cat("\nMediation Proportion:", format(100*x$pm,digits = 3),"%",
       "\np=", format.pval(x$pm.pval, digits = 2),
       " for one-sided test for mediation \n", sep = "")
+
   cat("Confidence Interval = [", format(100*x$pm.ci[1],digits = 3),"%",",",format(100*x$pm.ci[2],digits = 3),"%","]", sep = "")
-  cat("\n---------------------------")
+  } else
+  {
+    cat("\nMediation Proportion:", format(100*x$pm,digits = 3),"%")
+  }
+   cat("\n---------------------------")
 }

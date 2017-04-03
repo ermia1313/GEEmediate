@@ -5,7 +5,7 @@ Description: Causal mediation analysis for a single exposure/treatment and a sin
   both allowed to be either continuous or binary. The package implements the difference method 
   and provide point and interval estimates as well as testing for the natural direct and 
   indirect effects and the mediation proportion.
-Version: 1.0.0
+Version: 1.0.1
 Date: 2016-11-09
 Depends: R (>= 3.3.0)
 Imports: gee
