@@ -103,7 +103,7 @@ GEEmediate <- function(formula, exposure, mediator, df, family = gaussian,  cors
                                 dimnames(fit$robust.variance)[[2]]==paste0(exposure, ".star")]
     if (pm < 0 | pm >1) {
       warning("Crude PM estimate not within [0,1], no formal statistical infernece \n
-              Either NIE and NDE are in oppsoing directions or
+              Either NIE and NDE are in opposing directions or
               M is not a meidator.
               ")
       var.nie <-  v + v.star - 2 * covar
