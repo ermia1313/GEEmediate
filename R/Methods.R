@@ -20,11 +20,12 @@ print.GEEmediate <- function(x, digits = max(options()$digits - 4, 3),...)
     pvalue <- 2*pnorm(abs(zvalue),lower.tail = F)
     coef.table <- cbind(coeffs, sd.err, zvalue, pvalue)
     dimnames(coef.table) <- list(coeffs.names,
-                                 c("EStimate", "Std. Error", "z value", "Pr(>|z|)"))
+                                 c("Estimate", "Std. Error", "z value", "Pr(>|z|)"))
     printCoefmat(coef.table, digits = digits)
   } else if (x$pres=="sep") {
-    cat("Conditional Model (Model with the Mediator):\n \n")
-    cat("Coefficients:\n")
+    cat("------------------------------------------------------------------------------")
+    cat("\n------------------------------------------------------------------------------")
+    cat("\nMarginal Model (Model without the Mediator):\n")
     coeffs <- x$GEEfit$coefficients
     coeffs.names <- names(coeffs)
     stars <- which(sapply(coeffs.names, substrRight)==".star")
@@ -35,10 +36,18 @@ print.GEEmediate <- function(x, digits = max(options()$digits - 4, 3),...)
     pvalue <- 2*pnorm(abs(zvalue),lower.tail = F)
     coef.table <- cbind(coeffs, sd.err, zvalue, pvalue)
     dimnames(coef.table) <- list(names(coeffs),
-                                 c("EStimate", "Std. Error", "z value", "Pr(>|z|)"))
-    stats::printCoefmat(coef.table[stars,], digits = digits)
-    cat("\nMarginal Model (Model without the Mediator):\n")
-    stats::printCoefmat(coef.table[no.stars,],  digits = digits)
+                                 c("Estimate", "Std. Error", "z value", "Pr(>|z|)"))
+    cond.table <- coef.table[no.stars,]
+    rownames(cond.table)[1] <- "(Intercept)"
+    marg.table <- coef.table[stars,]
+    rownames(marg.table)[1] <- "(Intercept)"
+    rownames(marg.table)[-1] <- sapply(rownames(marg.table)[-1], function(x) substr(x,1,nchar(x)-5))
+    #cat(row.names(marg.table), "\n")
+    stats::printCoefmat(marg.table, digits = digits)
+    cat("\n------------------------------------------------------------------------------")
+    cat("\n------------------------------------------------------------------------------")
+    cat("\nConditional Model (Model with the Mediator):\n \n")
+    stats::printCoefmat(cond.table,  digits = digits)
   }
   cat("\n---------------------------")
   cat("\nNatural Indirect Effect: ", format(x$nie, digits = digits),
@@ -60,4 +69,41 @@ print.GEEmediate <- function(x, digits = max(options()$digits - 4, 3),...)
     cat("\nMediation Proportion:", format(100*x$pm,digits = 3),"%")
   }
    cat("\n---------------------------")
+}
+#' @export
+predict.GEEmediate <- function (object, newdata = NULL, model = c("cond", "marg"),type = c("link", "response", "terms"),
+                                se.fit = FALSE, dispersion = NULL, terms = NULL, na.action = na.pass, ...)
+{
+  model <- match.arg(model)
+  gee.object <- object$GEEfit
+  if(!missing(newdata) & !missing(dispersion) & !missing(terms)) {
+    pred <- predict.glm(object = gee.object, newdata = newdata, type = type, se.fit = se.fit, dispersion = dispersion, terms = terms,
+              na.action = na.action, ...)}
+
+  if(!missing(newdata) & !missing(dispersion) & missing(terms)) {
+    pred <- predict.glm(object = gee.object, newdata = newdata, type = type, se.fit = se.fit, dispersion = dispersion,
+                        na.action = na.action, ...)}
+
+  if(!missing(newdata) & missing(dispersion) & !missing(terms)) {
+    pred <- predict.glm(object = gee.object, newdata = newdata, type = type, se.fit = se.fit, terms = terms,
+                        na.action = na.action, ...)}
+
+  if(missing(newdata) & !missing(dispersion) & !missing(terms)) {
+    pred <- predict.glm(object = gee.object, type = type, se.fit = se.fit, dispersion = dispersion, terms = terms,
+                        na.action = na.action, ...)}
+
+  if(!missing(newdata) & missing(dispersion) & missing(terms)) {
+    pred <- predict.glm(object = gee.object, newdata = newdata, type = type, se.fit = se.fit, na.action = na.action, ...)}
+
+  if(missing(newdata) & !missing(dispersion) & missing(terms)) {
+    pred <- predict.glm(object = gee.object, type = type, se.fit = se.fit, dispersion = dispersion, na.action = na.action, ...)}
+
+  if(missing(newdata) & missing(dispersion) & !missing(terms)) {
+    pred <- predict.glm(object = gee.object,  type = type, se.fit = se.fit, terms = terms, na.action = na.action, ...)}
+
+  if(missing(newdata) & missing(dispersion) & missing(terms)) {
+    pred <- predict.glm(object = gee.object, type = type, se.fit = se.fit, na.action = na.action, ...)}
+  if (model=="cond") {out <- pred[1:(gee.object$nobs/2)]}
+  if (model=="marg") {out <- pred[(gee.object$nobs/2+1):gee.object$nobs]}
+  out
 }

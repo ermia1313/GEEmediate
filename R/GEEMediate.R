@@ -5,7 +5,7 @@
 #' produces point estimates, confidence intervals and p-values for the natural indirect effect and the mediation proportion
 #
 #' @references
-#' Nevo, Liao and Spiegelman, \emph{Estimation and infernece for the mediation proportion} (2016+)
+#' Nevo, Liao and Spiegelman, \emph{Estimation and infernece for the mediation proportion} (2017+)
 #' @param formula A formula expression as for
 #' other regression models, of the form response ~ predictors. See the documentation of \code{\link[stats]{lm}} and \code{\link[stats]{formula}} for details.
 #' predictors should include exposure/treatment and mediator.
@@ -51,10 +51,10 @@
 #' }
 #'
 #'
-#' @importFrom stats qnorm pnorm as.formula gaussian update printCoefmat
+#' @importFrom stats qnorm pnorm as.formula gaussian update printCoefmat model.frame na.pass predict.glm
 #' @export
 GEEmediate <- function(formula, exposure, mediator, df, family = gaussian,  corstr = "independence",
-                       conf.level = 0.95, surv = F,  pres = "tog",
+                       conf.level = 0.95, surv = F,  pres = "sep",
                        niealternative = "two-sided",...)
 {
   alp.conf <- (1 - conf.level)/2
@@ -62,12 +62,12 @@ GEEmediate <- function(formula, exposure, mediator, df, family = gaussian,  cors
   indep.vars <- all.vars(formula)[2:n.vars]
   if (!(pres %in% c("tog","sep")))
   {
-    message("Using pres='tog'. pres argument is unknown.")
-    pres <- "tog"
+    print("Using pres='sep'. pres argument is unknown.")
+    pres <- "sep"
   }
   if (!(niealternative %in% c("two-sided","one-sided")))
   {
-    warning(gettextf("niealternative = '%s' is not supported. Using 'two-sided' for nie test."))
+    warning(paste0("niealternative = '" , niealternative,"' is not supported. Using 'two-sided' for nie test."))
     niealternative <- "two-sided"
   }
   if (!(exposure %in% indep.vars))
@@ -102,18 +102,14 @@ GEEmediate <- function(formula, exposure, mediator, df, family = gaussian,  cors
   covar <- cov.gee[dimnames(fit$robust.variance)[[1]]==exposure,
                                 dimnames(fit$robust.variance)[[2]]==paste0(exposure, ".star")]
     if (pm < 0 | pm >1) {
-      warning("Crude PM estimate not within [0,1], no formal statistical infernece \n
-              Either NIE and NDE are in opposing directions or
-              M is not a meidator.
-              ")
+      warning("Crude PM estimate not within [0,1]. Either NIE and NDE are in opposing directions or M is not a mediator. Inference for NIE only")
       var.nie <-  v + v.star - 2 * covar
-      warning("Calculating two-sided p-value for the null NIE=0 ")
+      #warning("Calculating two-sided p-value for the null NIE=0 ")
       nie.pval <- pnorm(2*abs(nie)/sqrt(var.nie),lower.tail = F)
       nie.ci <- nie + c(qnorm(alp.conf), qnorm(1 - alp.conf)) * sqrt(var.nie)
       back$alter <- "two-sided"
       back$nie.pval <- nie.pval
       back$nie.ci <- nie.ci
-
     } else {
       var.pm <- v/te^2 + v.star * (nde^2) / (te^4) -
         2 * covar * nde / (te^3) # Var(PM) by the delta method
@@ -125,8 +121,8 @@ GEEmediate <- function(formula, exposure, mediator, df, family = gaussian,  cors
         nie.pval <- pnorm(nie/sqrt(var.nie),lower.tail = F)
       }
       pm.ci <- pm + c(qnorm(alp.conf), qnorm(1 - alp.conf)) * sqrt(var.pm)
-      if (pm.ci[1] < 0) {pm.ci[1] <- 0}
-      if (pm.ci[2] > 1) {pm.ci[2] <- 1}
+      #if (pm.ci[1] < 0) {pm.ci[1] <- 0}
+      #if (pm.ci[2] > 1) {pm.ci[2] <- 1}
       nie.ci <- nie + c(qnorm(alp.conf), qnorm(1 - alp.conf)) * sqrt(var.nie)
       back$pm.pval <- pm.pval
       back$pm.ci <- pm.ci
