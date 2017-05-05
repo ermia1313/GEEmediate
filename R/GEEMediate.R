@@ -51,7 +51,7 @@
 #' }
 #'
 #'
-#' @importFrom stats qnorm pnorm as.formula gaussian update printCoefmat model.frame na.pass predict.glm
+#' @importFrom stats qnorm pnorm as.formula gaussian update printCoefmat model.frame na.pass predict.glm make.link
 #' @export
 GEEmediate <- function(formula, exposure, mediator, df, family = gaussian,  corstr = "independence",
                        conf.level = 0.95, surv = F,  pres = "sep",

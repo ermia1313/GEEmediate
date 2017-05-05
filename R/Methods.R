@@ -71,39 +71,33 @@ print.GEEmediate <- function(x, digits = max(options()$digits - 4, 3),...)
    cat("\n---------------------------")
 }
 #' @export
-predict.GEEmediate <- function (object, newdata = NULL, model = c("cond", "marg"),type = c("link", "response", "terms"),
+predict.GEEmediate <- function (object, newdata = NULL, model.pred = c("cond", "marg"),type = c("link", "response", "terms"),
                                 se.fit = FALSE, dispersion = NULL, terms = NULL, na.action = na.pass, ...)
 {
-  model <- match.arg(model)
+  model.pred <- match.arg(model.pred)
+  type <- match.arg(type)
+  if (se.fit==T) {warning("se.fit=T is currently not supported for GEEmediate")}
+  if (type=="terms") {
+    warning("type='terms' is currently not supported for GEEmediate, using type='response' intead")
+    type <- "response"
+  }
   gee.object <- object$GEEfit
-  if(!missing(newdata) & !missing(dispersion) & !missing(terms)) {
-    pred <- predict.glm(object = gee.object, newdata = newdata, type = type, se.fit = se.fit, dispersion = dispersion, terms = terms,
-              na.action = na.action, ...)}
-
-  if(!missing(newdata) & !missing(dispersion) & missing(terms)) {
-    pred <- predict.glm(object = gee.object, newdata = newdata, type = type, se.fit = se.fit, dispersion = dispersion,
-                        na.action = na.action, ...)}
-
-  if(!missing(newdata) & missing(dispersion) & !missing(terms)) {
-    pred <- predict.glm(object = gee.object, newdata = newdata, type = type, se.fit = se.fit, terms = terms,
-                        na.action = na.action, ...)}
-
-  if(missing(newdata) & !missing(dispersion) & !missing(terms)) {
-    pred <- predict.glm(object = gee.object, type = type, se.fit = se.fit, dispersion = dispersion, terms = terms,
-                        na.action = na.action, ...)}
-
-  if(!missing(newdata) & missing(dispersion) & missing(terms)) {
-    pred <- predict.glm(object = gee.object, newdata = newdata, type = type, se.fit = se.fit, na.action = na.action, ...)}
-
-  if(missing(newdata) & !missing(dispersion) & missing(terms)) {
-    pred <- predict.glm(object = gee.object, type = type, se.fit = se.fit, dispersion = dispersion, na.action = na.action, ...)}
-
-  if(missing(newdata) & missing(dispersion) & !missing(terms)) {
-    pred <- predict.glm(object = gee.object,  type = type, se.fit = se.fit, terms = terms, na.action = na.action, ...)}
-
-  if(missing(newdata) & missing(dispersion) & missing(terms)) {
-    pred <- predict.glm(object = gee.object, type = type, se.fit = se.fit, na.action = na.action, ...)}
-  if (model=="cond") {out <- pred[1:(gee.object$nobs/2)]}
-  if (model=="marg") {out <- pred[(gee.object$nobs/2+1):gee.object$nobs]}
+  if(!missing(newdata))
+  {
+    newdf <- newdata[gee.object$xnames[substrRight(gee.object$xnames)!=".star" & substrRight(gee.object$xnames)!="INT"]]
+    dupl.df.new <- DupliData(df = newdf, mediator = object$call[[4]], surv = F)
+    dupl.df.new <- dupl.df.new[gee.object$xnames]
+    eta <- gee.object$linear.predictors
+    if (type=="response") {
+    pred <- make.link(tolower(gee.object$model$link))$linkinv(eta)
+    } else {
+      pred <- eta
+    }
+    if (model.pred=="cond") {out <- pred[1:(gee.object$nobs/2)]}
+    if (model.pred=="marg") {out <- pred[(gee.object$nobs/2+1):gee.object$nobs]}
+  } else {
+    pred <- predict.glm(object = gee.object, type = type, se.fit = F, na.action = na.action, ...)
+    if (model.pred=="cond") {out <- pred[1:(gee.object$nobs/2)]}
+    if (model.pred=="marg") {out <- pred[(gee.object$nobs/2+1):gee.object$nobs]}}
   out
 }
