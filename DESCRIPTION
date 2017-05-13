@@ -7,8 +7,8 @@ Description: Causal mediation analysis for a single exposure/treatment and a
     implements the difference method and provide point and interval estimates as
     well as testing for the natural direct and indirect effects and the mediation
     proportion.
-Version: 1.1.0.1
-Date: 2017-05-04
+Version: 1.1.1
+Date: 2017-05-12
 Depends:
     R (>= 3.3.0)
 Imports:
