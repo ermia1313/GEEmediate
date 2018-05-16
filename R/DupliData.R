@@ -1,6 +1,6 @@
 ######
 #
-#DupliData function expects a data frame, a single expousre (X), a mediator (M) and outcome (Y) [optional], and unless told otherwise
+#DupliData function expects a data frame, the name of a single expousre (X), a mediator (M) and outcome (Y) [optional], and unless told otherwise
 #
 ######
 
@@ -33,20 +33,37 @@ DupliData <- function(df, mediator = NULL, outcome = NULL, case = NULL , Time = 
      n.row <- nrow(df)
     df.star <- df
     df.star[[paste0(mediator)]] <- rep(0,n.row)
-    names.covar <- names(df)[!(names(df) %in% c(outcome,mediator))]
-    names(df.star)[!(names(df) %in% c(outcome,mediator))] <- paste0(names.covar,".star")
-
-    for (var.name in names.covar)
+    names.covar.nofactor <- names(df)[!(names(df) %in% c(outcome,mediator)) & !sapply(df, is.factor)]
+    names(df.star)[!(names(df) %in% c(outcome,mediator)) &  !sapply(df, is.factor)] <- paste0(names.covar.nofactor,".star")
+    for (var.name in names.covar.nofactor)
     {
       df[[paste0(var.name,".star")]]  <- rep(0,n.row)
       df.star[[paste0(var.name)]] <- rep(0,n.row)
     }
-    df$INT<- df.star$INT.star <- c(rep(1,n.row))
-    df$INT.star <- df.star$INT <- c(rep(0,n.row))
-    df.dupl <- rbind(df[c("INT","INT.star", names.covar, paste0(names.covar,".star"),
+    names.covar.factor <- names(df)[!(names(df) %in% c(outcome, mediator)) & sapply(df, is.factor)]
+    names(df.star)[!(names(df) %in% c(outcome, mediator)) &  sapply(df, is.factor)] <- paste0(names.covar.factor,".star")
+    for (var.name in names.covar.factor)
+    {
+      df[[paste0(var.name,".star")]]  <- factor(rep(levels(df[[var.name]])[1],n.row), levels = levels(df[[var.name]]))
+      df.star[[paste0(var.name)]] <- factor(rep(levels(df[[var.name]])[1],n.row), levels(df[[var.name]]))
+    }
+    #df$INT<- df.star$INT.star <- c(rep(1,n.row))
+    #df$INT.star <- df.star$INT <- c(rep(0,n.row))
+    # df.dupl <- rbind(df[c("INT","INT.star", names.covar.nofactor, names.covar.factor,
+    #                       paste0(c(names.covar.nofactor,names.covar.factor),".star"),
+    #                       paste0(c(mediator,outcome)))],
+    #                  df.star[c("INT","INT.star", names.covar.nofactor, names.covar.factor,
+    #                            paste0(c(names.covar.nofactor,names.covar.factor),".star"),
+    #                            paste0(c(mediator,outcome)))])
+    df.dupl <- rbind(df[c(names.covar.nofactor, names.covar.factor,
+                          paste0(c(names.covar.nofactor,names.covar.factor),".star"),
                           paste0(c(mediator,outcome)))],
-                     df.star[c("INT","INT.star", names.covar, paste0(names.covar,".star"),
+                     df.star[c(names.covar.nofactor, names.covar.factor,
+                               paste0(c(names.covar.nofactor,names.covar.factor),".star"),
                                paste0(c(mediator,outcome)))])
+    df.dupl$INT <- factor(c(rep("",n.row), rep(".star", n.row)))
+    df.dupl <- df.dupl[c("INT", paste0(c(outcome, mediator)), names.covar.nofactor, names.covar.factor,
+                                                              paste0(c(names.covar.nofactor,names.covar.factor),".star"))]
     if (is.null(ID)) {df.dupl$ID <- rep(1:n.row,2)}
   }
   } else {

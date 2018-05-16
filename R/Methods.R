@@ -1,6 +1,9 @@
 substrRight <- function(x, n=5){
   substr(x, nchar(x)-n+1, nchar(x)) ### Thank you Andrie (http://stackoverflow.com/questions/7963898/extracting-the-last-n-characters-from-a-string-in-r)
 }
+substrRightStar <- function(x, n=6){
+  substr(x, nchar(x)-n+1, nchar(x)-1) ### Thank you Andrie (http://stackoverflow.com/questions/7963898/extracting-the-last-n-characters-from-a-string-in-r)
+}
 #' @export
 print.GEEmediate <- function(x, digits = max(options()$digits - 4, 3),...)
 {
@@ -28,8 +31,10 @@ print.GEEmediate <- function(x, digits = max(options()$digits - 4, 3),...)
     cat("\nMarginal Model (Model without the Mediator):\n")
     coeffs <- x$GEEfit$coefficients
     coeffs.names <- names(coeffs)
-    stars <- which(sapply(coeffs.names, substrRight)==".star")
-    no.stars <- which(sapply(coeffs.names, substrRight)!=".star")
+    #stars <- which(sapply(coeffs.names, substrRight)==".star" | sapply(coeffs.names, substrRightStar)==".star")
+    #no.stars <- which(sapply(coeffs.names, substrRight)!=".star" & sapply(coeffs.names, substrRightStar)!=".star")
+    stars <- which(sapply(coeffs.names, function(x) grepl(".star", x)))
+    no.stars <- which(!sapply(coeffs.names, function(x) grepl(".star", x)))
     covmat <- x$GEEfit$robust.variance
     sd.err <- sqrt(diag(covmat))
     zvalue <- coeffs/sd.err
@@ -41,7 +46,7 @@ print.GEEmediate <- function(x, digits = max(options()$digits - 4, 3),...)
     rownames(cond.table)[1] <- "(Intercept)"
     marg.table <- coef.table[stars,]
     rownames(marg.table)[1] <- "(Intercept)"
-    rownames(marg.table)[-1] <- sapply(rownames(marg.table)[-1], function(x) substr(x,1,nchar(x)-5))
+    rownames(marg.table)[-1] <- sapply(rownames(marg.table)[-1], function(x) gsub(pattern = ".star", "", x))
     #cat(row.names(marg.table), "\n")
     stats::printCoefmat(marg.table, digits = digits)
     cat("\n------------------------------------------------------------------------------")
