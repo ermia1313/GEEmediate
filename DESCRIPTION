@@ -6,9 +6,9 @@ Description: Causal mediation analysis for a single exposure/treatment and a
     single mediator, both allowed to be either continuous or binary. The package
     implements the difference method and provide point and interval estimates as
     well as testing for the natural direct and indirect effects and the mediation
-    proportion.
+    proportion. Nevo, Xiao and Spiegelman (2019) <doi:10.1515/ijb-2017-0006>
 Version: 1.1.2
-Date: 2018-05-16
+Date: 2019-07-15
 Depends:
     R (>= 3.3.0)
 Imports:
@@ -16,5 +16,6 @@ Imports:
 License: GPL (>= 3)
 NeedsCompilation: no
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.0
 BugReports: https://github.com/daniel258/GEEMediate/issues
+Encoding: UTF-8

@@ -5,8 +5,8 @@
 \title{Mediation Analysis for Generalized Linear Models Using the Difference Method}
 \usage{
 GEEmediate(formula, exposure, mediator, df, family = gaussian,
-  corstr = "independence", conf.level = 0.95, surv = F, pres = "sep",
-  niealternative = "two-sided", ...)
+  corstr = "independence", conf.level = 0.95, surv = F,
+  pres = "sep", niealternative = "two-sided", ...)
 }
 \arguments{
 \item{formula}{A formula expression as for
@@ -76,4 +76,3 @@ GEEmediate(Y ~ X + M, exposure = "X", mediator = "M", df = df)
 \references{
 Nevo, Liao and Spiegelman, \emph{Estimation and infernece for the mediation proportion} (2017+)
 }
-
