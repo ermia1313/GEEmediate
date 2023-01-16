@@ -105,7 +105,7 @@ GEEmediate <- function(formula, exposure, mediator, df, family = gaussian,  cors
       warning("Crude PM estimate not within [0,1]. Either NIE and NDE are in opposing directions or M is not a mediator. Inference for NIE only")
       var.nie <-  v + v.star - 2 * covar
       #warning("Calculating two-sided p-value for the null NIE=0 ")
-      nie.pval <- pnorm(2*abs(nie)/sqrt(var.nie),lower.tail = F)
+      nie.pval <- 2*pnorm(abs(nie)/sqrt(var.nie),lower.tail = F)
       nie.ci <- nie + c(qnorm(alp.conf), qnorm(1 - alp.conf)) * sqrt(var.nie)
       back$alter <- "two-sided"
       back$nie.pval <- nie.pval
@@ -116,7 +116,7 @@ GEEmediate <- function(formula, exposure, mediator, df, family = gaussian,  cors
       var.nie <-  v + v.star - 2 * covar
       pm.pval <- pnorm(pm/sqrt(var.pm),lower.tail = F)
       if (niealternative=="two-sided") {
-      nie.pval <- pnorm(2*abs(nie)/sqrt(var.nie),lower.tail = F)
+      nie.pval <- 2*pnorm(abs(nie)/sqrt(var.nie),lower.tail = F)
       } else {
         nie.pval <- pnorm(nie/sqrt(var.nie),lower.tail = F)
       }
