@@ -5,7 +5,7 @@
 #' produces point estimates, confidence intervals and p-values for the natural indirect effect and the mediation proportion
 #
 #' @references
-#' Nevo, Liao and Spiegelman, \emph{Estimation and infernece for the mediation proportion} (2017+)
+#' Nevo, Liao and Spiegelman, \emph{Estimation and infernece for the mediation proportion}, International Journal of Biostatistics (2017+)
 #' @param formula A formula expression as for
 #' other regression models, of the form response ~ predictors. See the documentation of \code{\link[stats]{lm}} and \code{\link[stats]{formula}} for details.
 #' predictors should include exposure/treatment and mediator.

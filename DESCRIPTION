@@ -16,6 +16,6 @@ Imports:
 License: GPL (>= 3)
 NeedsCompilation: no
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 7.2.0
 BugReports: https://github.com/daniel258/GEEMediate/issues
 Encoding: UTF-8
