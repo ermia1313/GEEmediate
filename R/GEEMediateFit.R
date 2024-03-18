@@ -1,6 +1,6 @@
 #' @importFrom stats pnorm qnorm
 GEEmediateFit <- function(formula, df, exposure, mediator,
-                          surv = F, family = gaussian, corstr  = "independence", ID = NULL,...)
+                          surv = F, family = gaussian, corstr  = "independence", ID = ID,...)
 {
   outcome.name <- all.vars(formula)[1]
 #  ID <- NULL
